@@ -73,7 +73,7 @@ async function createDefaultAdmin() {
 
 mongoose.connection.once('connected', () => {
   console.log('Mongoose connected, creating admin user...');
-  createDefaultAdmin();
+//  createDefaultAdmin();
 });
 
 mongoose.connection.on('error', (err) => {
