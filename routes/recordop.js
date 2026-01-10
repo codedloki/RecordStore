@@ -6,17 +6,18 @@ const records = require('../models/record')
 
 router.post('/add', verifyJWt, async (req, res) => {
     try {
-        const { itemName, vehicleno, source, destination, amount, qty, date, time } = req.body
+        const { itemName, vehicleno, cusname ,source, destination, amount, qty, date, time } = req.body
         console.log("itemName", itemName, "vehicleno", vehicleno, "source", source, "destination", destination, "amount", amount, "qty", qty, "date", date, "time   ", time)
 
         console.log(time)
-        if (!itemName || !vehicleno || !source || !destination || !amount || !qty || !date || !time) {
+        if (!itemName || !vehicleno || ! cusname || !source || !destination || !amount || !qty || !date || !time) {
             return res.status(404).json({ "message": "All Fields are required" })
         }
         // In routes/recordop.js
         const record = await recordService.addRecord(
             itemName,
             vehicleno,
+            cusname,
             source,
             destination,
             amount,

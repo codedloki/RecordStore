@@ -1,10 +1,11 @@
 
 const records = require('../models/record')
 
-const addRecord = async (itemName, vehicleno, source, destination, amount, quantity, date, time) => {
+const addRecord = async (itemName, vehicleno, cusname,source, destination, amount, quantity, date, time) => {
     try {
         const record = new records({
             itemName: itemName,
+            cusname: cusname,
             vehicleno: vehicleno,
             source: source,
             destination: destination,

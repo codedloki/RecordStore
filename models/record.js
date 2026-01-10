@@ -9,6 +9,10 @@ const recordSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.String,
         required: true,
     },
+    cusname: {
+    type: mongoose.Schema.Types.String,
+    required:true, 
+  },
     source: {
         type: mongoose.Schema.Types.String,
         required: true,
