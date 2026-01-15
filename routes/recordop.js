@@ -3,6 +3,8 @@ const router = express.Router()
 const recordService = require('../services/recordop')
 const verifyJWt = require('../middleware/verifyJWT')
 const records = require('../models/record')
+const csvjson = require("csvjson")
+
 
 router.post('/add', verifyJWt, async (req, res) => {
     try {
@@ -39,7 +41,7 @@ router.post('/add', verifyJWt, async (req, res) => {
 })
 
 
-router.get('/all', verifyJWt, async (req, res) => {
+router.get('/all', async (req, res) => {
     try {
         // Fetch actual results with await
         const recors = await records.find({});
@@ -57,4 +59,55 @@ router.get('/all', verifyJWt, async (req, res) => {
         });
     }
 });
+
+
+
+
+router.get('/export/records',verifyJWt, async (req, res) => {
+  try {
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader(
+      'Content-Disposition',
+      'attachment; filename="records.csv"'
+    );
+
+    const recordsData = await records.find({}).lean();
+
+    // 🔴 THIS PART IS NON-NEGOTIABLE
+    const cleanedData = recordsData.map(r => ({
+      time: r.time ?? '',
+      date: r.date ?? '',
+      qty: r.qty != null ? Number(r.qty) : '',
+      amount:
+        r.amount && typeof r.amount === 'object' && r.amount.toString
+          ? Number(r.amount.toString())
+          : r.amount ?? '',
+      destination: r.destination ?? '',
+      source: r.source ?? '',
+      cusname: r.cusname ?? '',
+      vehicleno: r.vehicleno ?? '',
+      itemName: r.itemName ?? ''
+    }));
+
+    const csvdata = csvjson.toCSV(cleanedData, {
+      headers: [
+        'time',
+        'date',
+        'qty',
+        'amount',
+        'destination',
+        'source',
+        'cusname',
+        'vehicleno',
+        'itemName'
+      ]
+    });
+
+    return res.status(200).send(csvdata);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send('CSV export failed');
+  }
+});
+
 module.exports = router
